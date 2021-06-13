@@ -5,17 +5,19 @@ infection_tracker = 2
 
 #Initializing a sample infection deck. Eventually to be replaced by a spreadsheet
 cards = [\
-  ['New York', None, 'Deck'], \
-  ['Jacksonville', None, 'Deck'], \
-  ['New York', None, 'Deck'], \
-  ['Cairo', None, 'Discard'], \
-  ['Osaka', None, 'Deck'], \
-  ['New York', None, 'Deck'], \
-  ['New York', None, 'Deck'], \
-  ['New York', None, 'Deck'], \
-  ['New York', None, 'Package 6']]
+  ['New York', False, 'Deck', None], \
+  ['Jacksonville', False, 'Deck', None], \
+  ['New York', False, 'Deck', None], \
+  ['Cairo', True, 'Discard', None], \
+  ['Osaka', False, 'Deck', None], \
+  ['New York', False, 'Deck', None], \
+  ['New York', False, 'Deck', None], \
+  ['New York', True, 'Deck', None], \
+  ['New York', False, 'Package 6', None], \
+  ['London', False, 'Deck', 'Well Stocked'] \
+      ]
     
-infection_cards = pd.DataFrame(cards, columns = ['city', 'range', 'location'])
+infection_cards = pd.DataFrame(cards, columns = ['city', 'forsaken', 'location', 'stickers'])
 
 #Sort by city name and create a unique ID for each infection card: city name + index
 infection_cards.sort_values(['city', 'location'], inplace=True, ignore_index=True)
@@ -44,11 +46,14 @@ class Deck:
 
 #Change location in dataframe to 'discard,' remove card from deck list and add to discard list
     def discard_top(self, card_name):
-        self.cards.at[card_name, 'location'] = 'Discard'
-        del self.deck_list[0]
-        for slot in self.deck_list:
-            slot.remove(card_name)
-        self.discard_list.insert(0, card_name)
+        if self.cards.at[card_name, 'forsaken'] == True:
+            print('Move the card to the \"Game End\" area and infect a new city.')
+        else:
+            self.cards.at[card_name, 'location'] = 'Discard'
+            del self.deck_list[0]
+            for slot in self.deck_list:
+                slot.remove(card_name)
+            self.discard_list.insert(0, card_name)
         
 #Move cards from discard to deck. Add those cards to possible cards in deck list 
 #and remove from discard list
@@ -65,8 +70,8 @@ print(infection_cards)
 print(infection_deck.discard_list)
 
 #Discard two cards to mimic infect cities step at end of turn
-infection_deck.discard_top('New York2')
-infection_deck.discard_top('Osaka8')
+infection_deck.discard_top('New York3')
+infection_deck.discard_top('Osaka9')
 #Print the card Sataframe, deck list, and discard list to verify discard functionality
 print(infection_cards)
 print(infection_deck.deck_list)
@@ -77,3 +82,6 @@ infection_deck.epidemic()
 print(infection_cards)
 print(infection_deck.deck_list)
 print(infection_deck.discard_list)
+
+#Test discarding 0 population city
+infection_deck.discard_top('Cairo0')
