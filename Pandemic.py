@@ -29,15 +29,7 @@ infection_cards.set_index('unique_name', drop=False, inplace=True)
 def start_game(card_df):
     #Move discard pile to deck
     card_df.replace('Discard', 'Deck', inplace=True)
-
-# cards_in_deck = infection_cards[infection_cards.location == 'Deck']
-# infection_deck = [[card for card in cards_in_deck['unique_name']] for i in range(len(cards_in_deck))]
-# print(infection_deck)
-
-# def to_discard(card_df, card_unique_name):
-#     card_df[card_unique_name].location = 'Discard'
-    
-    
+ 
 start_game(infection_cards)
 
 class Deck:
@@ -49,7 +41,8 @@ class Deck:
         self.deck_list = [[card for card in self.in_deck.unique_name] \
                           for x in range(self.deck_size)]
         self.discard_list = [card for card in card_df[card_df.location == 'Discard'].unique_name]
-         
+
+#Change location in dataframe to 'discard,' remove card from deck list and add to discard list
     def discard_top(self, card_name):
         self.cards.at[card_name, 'location'] = 'Discard'
         del self.deck_list[0]
@@ -70,13 +63,16 @@ class Deck:
 infection_deck = Deck(infection_cards, 'infection')
 print(infection_cards)
 print(infection_deck.discard_list)
+
+#Discard two cards to mimic infect cities step at end of turn
 infection_deck.discard_top('New York2')
 infection_deck.discard_top('Osaka8')
-
+#Print the card Sataframe, deck list, and discard list to verify discard functionality
 print(infection_cards)
 print(infection_deck.deck_list)
 print(infection_deck.discard_list)
 
+#Test of epidemic funtion
 infection_deck.epidemic()
 print(infection_cards)
 print(infection_deck.deck_list)
