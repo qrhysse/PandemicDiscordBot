@@ -24,15 +24,6 @@ infection_cards.sort_values(['city', 'location'], inplace=True, ignore_index=Tru
 infection_cards['unique_name'] = infection_cards.city + infection_cards.index.map(str)
 infection_cards.set_index('unique_name', drop=False, inplace=True)
 
-#print(infection_cards)
-
-
-#Process for starting a new game
-def start_game(card_df):
-    #Move discard pile to deck
-    card_df.replace('Discard', 'Deck', inplace=True)
- 
-start_game(infection_cards)
 
 class Deck:
     def __init__(self, card_df, card_type):
@@ -63,8 +54,18 @@ class Deck:
             self.cards.at[card, 'location'] = 'Deck'
             self.deck_list.insert(0, self.discard_list)
         self.discard_list = []
-        
+#print(infection_cards)
 
+
+
+#Process for starting a new game
+def start_game(card_df):
+    #Move discard pile to deck
+    card_df.replace('Discard', 'Deck', inplace=True)
+ 
+start_game(infection_cards)
+
+#Test game scenario
 infection_deck = Deck(infection_cards, 'infection')
 print(infection_cards)
 print(infection_deck.discard_list)
