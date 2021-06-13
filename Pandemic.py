@@ -1,7 +1,8 @@
 import re
 
 #The number of cards that are flipped during infect cities step
-infection_tracker = 2
+infection_rate = [2, 2, 2, 3, 3, 4, 4, 5]
+infection_tracker = 0
 
 class Deck:
     def __init__(self, card_df, card_type):
@@ -52,10 +53,14 @@ class Deck:
 #Move cards from discard to deck. Add those cards to possible cards in deck list 
 #and remove from discard list
     def epidemic(self):
+        global infection_tracker
         for card in self.discard_list:
             self.cards.at[card, 'location'] = 'Deck'
             self.deck_list.insert(0, self.discard_list)
         self.discard_list = []
+        
+        #Move infection tracker up one space
+        infection_tracker += 1
 
 
 
@@ -64,6 +69,10 @@ def start_game(card_df):
     #Move discard pile to deck
     card_df.replace('Discard', 'Deck', inplace=True)
     print('All discarded cards moved to the deck.')
+    
+    #Reset infection tracker at start of game
+    global infection_tracker
+    infection_tracker = 0
  
 
 
