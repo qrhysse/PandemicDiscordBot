@@ -5,7 +5,7 @@ import pandas as pd
 #Initializing a sample infection deck. Eventually to be replaced by a spreadsheet
 cards = [\
   ['New York', False, 'Deck', None], \
-  ['Jacksonville', False, 'Deck', None], \
+  ['Jacksonville', False, 'Package 6', None], \
   ['New York', False, 'Deck', None], \
   ['Cairo', True, 'Discard', None], \
   ['Osaka', False, 'Deck', None], \
@@ -73,3 +73,14 @@ print('\n Current Discard List \n')
 print(infection_deck.discard_list)
 print(Pandemic.infection_tracker)
 print(Pandemic.infection_rate[Pandemic.infection_tracker])
+
+print('\n Wearing Off Test\n')
+infection_deck.wear_off('Jacksonville')
+print(infection_cards)
+print(infection_deck.package_list)
+print(infection_deck.discard_list)
+
+print('\n Inoculate Test \n')
+infection_deck.inoculate('Jacksonville')
+print(infection_cards)
+print(infection_deck.package_list)
