@@ -1,5 +1,9 @@
 import re
+import decimal
+from decimal import Decimal
+from collections import Counter
 
+#decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 #The number of cards that are flipped during infect cities step
 infection_rate = [2, 2, 2, 3, 3, 4, 4, 5]
 infection_tracker = 0
@@ -82,25 +86,51 @@ class Deck:
             self.deck_list.insert(0, self.discard_list)
         self.discard_list = []
         
-    
+    #Returns lists of possible cards in each slot
     def top_x_cards(self, x):
         answer = ''
         for i in range(x):
             answer += ('\nCard {0} possibilities: {1}'.format(i+1, self.deck_list[i]))
         return(answer)
         
+    #Retuirns a dictionary of each card and how many will be drawn in the top x cards
+    def create_probablility_dict(self, top_cards):
+        deck_slot = [self.deck_list[i] for i in range(top_cards)]
+        
+        no_unique_slots = []
+        for slot in deck_slot:
+            no_unique_list = []
+            for card in slot:
+                card_name = ''.join(i for i in card if not i.isdigit())
+                no_unique_list.append(card_name)
+            no_unique_slots.append(no_unique_list)
+        
+        list_of_dicts = []
+        for slot in no_unique_slots:
+            counted_dict = {card:slot.count(card) for card in slot}
+            list_of_dicts.append(counted_dict)
+        
+        end_dict = {}
+        for slot in list_of_dicts:
+            total = sum(slot.values())
+            for k, v in slot.items():
+                odds = (float(v) / total)
+                slot[k] = odds
+            end_dict = Counter(end_dict) + Counter(slot)
+        #print(list_of_dicts)
+        return dict(end_dict)
+                   
     
-    def create_probablility_dict(self, deck_slot):
-        no_unique_list = []
-        for card in deck_slot:
-            card_name = ''.join(i for i in card if not i.isdigit())
-            no_unique_list.append(card_name)
-        counted_dict = {card:no_unique_list.count(card) for card in no_unique_list}
-        total = sum(counted_dict.values())
-        for k, v in counted_dict.items():
-            odds = round((float(v) / total) * 100, 2)
-            counted_dict[k] = [v, odds]
-        return counted_dict
+        # no_unique_list = []
+        # for card in deck_slot:
+        #     card_name = ''.join(i for i in card if not i.isdigit())
+        #     no_unique_list.append(card_name)
+        # counted_dict = {card:no_unique_list.count(card) for card in no_unique_list}
+        # total = sum(counted_dict.values())
+        # for k, v in counted_dict.items():
+        #     odds = round((float(v) / total) * 100, 2)
+        #     counted_dict[k] = [v, odds]
+        # return counted_dict
     
             
 

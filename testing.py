@@ -92,7 +92,7 @@ print(infection_deck.package_list)
 print('\n Possible Deck List \n')
 print(infection_deck.deck_list)
 print('\n Possible Cards on top X')
-print(infection_deck.top_x_cards(5))
+print(infection_deck.top_x_cards(8))
 
 
-print(infection_deck.create_probablility_dict(infection_deck.deck_list[1]))
+print(infection_deck.create_probablility_dict(4))
