@@ -39,7 +39,7 @@ class Deck:
     #Change location in dataframe to 'discard,' remove card from deck list and add to discard list
     def discard_top(self, card_input):
         card_name = self.find_best_match(card_input, self.deck_list[0])
-        del self.deck_list[0]
+       
         #Reminder to infect another city if this city is forsake. Moves card to game end area
         if self.cards.at[card_name, 'forsaken'] == True:
             for slot in self.deck_list:
@@ -55,6 +55,8 @@ class Deck:
             #Reminder to discard another card for Hollow Men effect
             if re.search('Hollow Men', card_name, re.IGNORECASE):
                 print('Discard another card.\n')
+                
+        del self.deck_list[0]
  
     #Move card from Package 6 to discard pile
     def wear_off(self, card_input):
@@ -80,13 +82,25 @@ class Deck:
             self.deck_list.insert(0, self.discard_list)
         self.discard_list = []
         
+    
+    def top_x_cards(self, x):
+        answer = ''
+        for i in range(x):
+            answer += ('\nCard {0} possibilities: {1}'.format(i+1, self.deck_list[i]))
+        return(answer)
         
-        
     
-    
-        
-    
-    
+    def create_probablility_dict(self, deck_slot):
+        no_unique_list = []
+        for card in deck_slot:
+            card_name = ''.join(i for i in card if not i.isdigit())
+            no_unique_list.append(card_name)
+        counted_dict = {card:no_unique_list.count(card) for card in no_unique_list}
+        total = sum(counted_dict.values())
+        for k, v in counted_dict.items():
+            odds = round((float(v) / total) * 100, 2)
+            counted_dict[k] = [v, odds]
+        return counted_dict
     
             
 
