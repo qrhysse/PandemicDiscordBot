@@ -51,7 +51,9 @@ class Deck:
             for slot in self.deck_list:
                 slot.remove(card_name)
             self.discard_list.insert(0, card_name)
-            
+ 
+#Use regex to find matching card that could be on top of deck. 
+#If multiple choices exist, choses first option.
     def find_best_match(self, card_name):
         match_list = []
         pattern = re.escape(card_name) + '[0-9]+'
@@ -81,25 +83,45 @@ def start_game(card_df):
 start_game(infection_cards)
 
 #Test game scenario
+print('\n    Start Test Game')
 infection_deck = Deck(infection_cards, 'infection')
+print('\n Infection Cards DataFrame \n')
 print(infection_cards)
+print('\n Possible Deck List \n')
+print(infection_deck.deck_list)
+print('\n Current Discard List \n')
 print(infection_deck.discard_list)
 
 #Discard two cards to mimic infect cities step at end of turn
+print('\n    Infect New York and Osaka')
 infection_deck.discard_top('New York')
 infection_deck.discard_top('Osaka')
-#Print the card Sataframe, deck list, and discard list to verify discard functionality
+#Print the card Dataframe, deck list, and discard list to verify discard functionality
+print('\n Infection Cards DataFrame \n')
 print(infection_cards)
+print('\n Possible Deck List \n')
 print(infection_deck.deck_list)
+print('\n Current Discard List \n')
 print(infection_deck.discard_list)
 
+print('\n    Infect a forsaken city')
 #Test discarding 0 population city
 infection_deck.discard_top('Cairo')
+print('\n Infection Cards DataFrame \n')
+print(infection_cards)
+print('\n Possible Deck List \n')
+print(infection_deck.deck_list)
+print('\n Current Discard List \n')
+print(infection_deck.discard_list)
 
+print('\n    Epidemic Test')
 #Test of epidemic funtion
 infection_deck.epidemic()
+print('\n Infection Cards DataFrame \n')
 print(infection_cards)
+print('\n Possible Deck List \n')
 print(infection_deck.deck_list)
+print('\n Current Discard List \n')
 print(infection_deck.discard_list)
 
 #Test discarding 0 population city
