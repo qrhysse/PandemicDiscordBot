@@ -40,6 +40,7 @@ class Deck:
     def discard_top(self, card_input):
         card_name = self.find_best_match(card_input, self.deck_list[0])
         del self.deck_list[0]
+        #Reminder to infect another city if this city is forsake. Moves card to game end area
         if self.cards.at[card_name, 'forsaken'] == True:
             for slot in self.deck_list:
                 self.remove_from_card_list(card_name, slot)
@@ -51,6 +52,7 @@ class Deck:
             for slot in self.deck_list:
                 self.remove_from_card_list(card_name, slot)
             print(card_input + ' was discarded.\n')
+            #Reminder to discard another card for Hollow Men effect
             if re.search('Hollow Men', card_name, re.IGNORECASE):
                 print('Discard another card.\n')
  
@@ -60,14 +62,16 @@ class Deck:
         self.move_to_discard(card_name)
         self.remove_from_card_list(card_name, self.package_list)
     
+    #Move card from discard pile to package 6
     def inoculate(self, card_input):
         card_name = self.find_best_match(card_input, self.discard_list)
         self.move_to_package(card_name)
         self.remove_from_card_list(card_name, self.discard_list)
         
     #Move cards from discard to deck. Add those cards to possible cards in deck list 
-    #and remove from discard list. Increase infection tracker by 1
+    #and remove from discard list. 
     def epidemic(self):
+        #Increase infection tracker by 1
         global infection_tracker
         infection_tracker += 1
         

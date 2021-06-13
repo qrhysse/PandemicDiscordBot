@@ -51,7 +51,7 @@ print('\n Current Discard List \n')
 print(infection_deck.discard_list)
 
 print('\n    Infect a forsaken city')
-
+#Test forsaken cities
 infection_deck.discard_top('Cairo')
 print('\n Infection Cards DataFrame \n')
 print(infection_cards)
@@ -84,3 +84,7 @@ print('\n Inoculate Test \n')
 infection_deck.inoculate('Jacksonville')
 print(infection_cards)
 print(infection_deck.package_list)
+
+#Test discarding a card that can't be on top of the deck
+try: infection_deck.discard_top('Jacksonville')
+except: print('That can\'t be on top!')
