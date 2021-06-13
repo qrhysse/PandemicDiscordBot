@@ -50,7 +50,6 @@ class Deck:
 #and remove from discard list
     def epidemic(self):
         for card in self.discard_list:
-            print(card)
             self.cards.at[card, 'location'] = 'Deck'
             self.deck_list.insert(0, self.discard_list)
         self.discard_list = []
