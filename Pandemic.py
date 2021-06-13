@@ -1,6 +1,4 @@
 import re
-import decimal
-from decimal import Decimal
 from collections import Counter
 
 #decimal.getcontext().rounding = decimal.ROUND_HALF_UP
@@ -115,24 +113,16 @@ class Deck:
             total = sum(slot.values())
             for k, v in slot.items():
                 odds = (float(v) / total)
-                slot[k] = odds
-            end_dict = Counter(end_dict) + Counter(slot)
-        #print(list_of_dicts)
-        return dict(end_dict)
+                slot[k] = round(odds, 10)
+            end_dict = dict(Counter(end_dict) + Counter(slot))
+        for k, v in end_dict.items():
+            end_dict[k] = round(v, 2)
+        return end_dict
                    
     
-        # no_unique_list = []
-        # for card in deck_slot:
-        #     card_name = ''.join(i for i in card if not i.isdigit())
-        #     no_unique_list.append(card_name)
-        # counted_dict = {card:no_unique_list.count(card) for card in no_unique_list}
-        # total = sum(counted_dict.values())
-        # for k, v in counted_dict.items():
-        #     odds = round((float(v) / total) * 100, 2)
-        #     counted_dict[k] = [v, odds]
-        # return counted_dict
-    
-            
+    def predict_next_infect_cities(self):
+        prediction_dict = self.create_probablility_dict(infection_rate[infection_tracker])
+        print('In the next infect cities step, you will probably hit: {}'.format(prediction_dict))
 
 
 

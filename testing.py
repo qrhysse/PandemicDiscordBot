@@ -94,5 +94,7 @@ print(infection_deck.deck_list)
 print('\n Possible Cards on top X')
 print(infection_deck.top_x_cards(8))
 
-
+print('\nCards that will be drawn in next X cards')
 print(infection_deck.create_probablility_dict(4))
+
+infection_deck.predict_next_infect_cities()
