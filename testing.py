@@ -4,20 +4,21 @@ import pandas as pd
 
 #Initializing a sample infection deck. Eventually to be replaced by a spreadsheet
 cards = [\
-  ['New York', False, 'Deck', None], \
-  ['Jacksonville', False, 'Package 6', None], \
-  ['New York', False, 'Deck', None], \
-  ['Cairo', True, 'Discard', None], \
-  ['Osaka', False, 'Deck', None], \
-  ['New York', False, 'Deck', None], \
-  ['New York', False, 'Deck', None], \
-  ['New York', True, 'Deck', None], \
-  ['New York', False, 'Package 6', None], \
-  ['London', False, 'Deck', 'Well Stocked'], \
-  ['Hollow Men', False, 'Deck', None]
-      ]
+  ['New York', False, 'Deck', None, 'Infection'], \
+  ['Jacksonville', False, 'Package 6', None, 'Infection'], \
+  ['New York', False, 'Deck', None, 'Infection'], \
+  ['Cairo', True, 'Discard', None, 'Infection'], \
+  ['Osaka', False, 'Deck', None, 'Infection'], \
+  ['New York', False, 'Deck', None, 'Infection'], \
+  ['New York', False, 'Deck', None, 'Infection'], \
+  ['New York', True, 'Deck', None, 'Infection'], \
+  ['New York', False, 'Package 6', None, 'Infection'], \
+  ['London', False, 'Deck', 'Well Stocked', 'Infection'], \
+  ['Hollow Men', False, 'Deck', None, 'Infection']]
     
-infection_cards = pd.DataFrame(cards, columns = ['city', 'forsaken', 'location', 'stickers'])
+
+
+infection_cards = pd.DataFrame(cards, columns = ['city', 'forsaken', 'location', 'stickers', 'type'])
 
 #Sort by city name and create a unique ID for each infection card: city name + index
 infection_cards.sort_values(['city', 'location'], inplace=True, ignore_index=True)

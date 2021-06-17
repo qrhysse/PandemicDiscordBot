@@ -9,13 +9,15 @@ infection_tracker = 0
 class Deck:
     def __init__(self, card_df, card_type):
         self.type = card_type
-        self.cards = card_df
+        self.cards = card_df[card_df.type == self.type]
         self.in_deck = card_df[card_df.location == 'Deck']
         self.deck_size = len(self.in_deck)
         self.deck_list = [[card for card in self.in_deck.unique_name] \
                           for x in range(self.deck_size)]
-        self.discard_list = [card for card in card_df[card_df.location == 'Discard'].unique_name]
-        self.package_list = [card for card in card_df[card_df.location == 'Package 6'].unique_name]
+        self.discard_list = [card for card in \
+                             card_df[card_df.location == 'Discard'].unique_name]
+        self.package_list = [card for card in \
+                             card_df[card_df.location == 'Package 6'].unique_name]
         
         
         
