@@ -5,24 +5,19 @@ Created on Thu Jun 17 15:12:45 2021
 @author: Chris
 """
 import pandas as pd
-import Pandemic
+import sheet as sh
+import pandemic
 
-sheet_url = 'https://docs.google.com/spreadsheets/d/133EKlMVdgp8e-aEEiBsV4NPdttHHDfk0JKvQfNXASUw/edit#gid=0'
-csv_url = 'https://docs.google.com/spreadsheets/d/133EKlMVdgp8e-aEEiBsV4NPdttHHDfk0JKvQfNXASUw/export?format=csv'
+SPREADSHEET_ID = '133EKlMVdgp8e-aEEiBsV4NPdttHHDfk0JKvQfNXASUw'
+spreadsheet = sh.sheet_to_df(SPREADSHEET_ID)
+infection_cards = pd.DataFrame(spreadsheet[0], columns = spreadsheet[1])
 
-infection_cards = pd.read_csv('pandemic sheet.csv')
-infection_cards.columns = ['city', 'location', 'color', 'sticker', 'forsaken', 'type']
-                              
-                              
-    
-#['city', 'location', 'color', 'sticker', 'forsaken', 'type']
-    
-infection_cards.sort_values(['city', 'location'], inplace=True, ignore_index=True)
-infection_cards['unique_name'] = infection_cards.city + infection_cards.index.map(str)
+infection_cards.sort_values(['card_name', 'location'], inplace=True, ignore_index=True)
+infection_cards['unique_name'] = infection_cards.card_name + infection_cards.index.map(str)
 #infection_cards.set_index('unique_name', drop=False, inplace=True)
 
-Pandemic.start_game(infection_cards)
-infection_deck = Pandemic.Deck(infection_cards, 'Infection')
+pandemic.start_game(infection_cards)
+infection_deck = pandemic.Deck(infection_cards, 'Infection')
 
 print(infection_deck.cards)
 
