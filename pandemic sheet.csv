@@ -1,61 +1,61 @@
-Card Name,Location,Color,Sticker,Forsaken,Card Type
-Sao Paulo,Package 6,Yellow,None,FALSE,Infection
-Sao Paulo,Package 6,Yellow,None,FALSE,Infection
-Sao Paulo,Package 6,Yellow,None,FALSE,Infection
-Washington,Package 6,Blue,None,FALSE,Infection
-Washington,Package 6,Blue,None,FALSE,Infection
-New York,Package 6,Blue,None,FALSE,Infection
-New York,Package 6,Blue,None,FALSE,Infection
-London,Package 6,Blue,None,FALSE,Infection
-London,Package 6,Blue,None,FALSE,Infection
-Chicago,Package 6,Blue,None,FALSE,Infection
-Chicago,Package 6,Blue,None,FALSE,Infection
-San Francisco,Package 6,Blue,None,FALSE,Infection
-San Francisco,Package 6,Blue,None,FALSE,Infection
-Tripoli,Package 6,Black,None,FALSE,Infection
-Tripoli,Package 6,Black,None,FALSE,Infection
-Cairo,Package 6,Black,None,FALSE,Infection
-Cairo,Package 6,Black,None,FALSE,Infection
-Lagos,Package 6,Yellow,None,FALSE,Infection
-London,Deck,Blue,Well Stocked,FALSE,Infection
-St. Petersburg,Deck,Blue,Well Stocked,FALSE,Infection
-Bogota,Deck,Yellow,None,TRUE,Infection
-Denver,Deck,Blue,None,TRUE,Infection
-Kinshasa,Deck,Yellow,None,TRUE,Infection
-Bogota,Deck,Yellow,None,TRUE,Infection
-Denver,Deck,Blue,None,TRUE,Infection
-Kolkata,Deck,Black,None,FALSE,Infection
-New Mumbai,Deck,Black,None,FALSE,Infection
-Triploi,Deck,Black,None,FALSE,Infection
-Delhi,Deck,Black,None,FALSE,Infection
-Cairo,Deck,Black,None,FALSE,Infection
-Moscow,Deck,Black,None,FALSE,Infection
-Tehran,Deck,Black,None,FALSE,Infection
-Baghdad,Deck,Black,None,FALSE,Infection
-Baghdad,Deck,Black,None,FALSE,Infection
-Jakarta,Deck,Red,None,FALSE,Infection
-New York,Deck,Blue,None,FALSE,Infection
-Paris,Deck,Blue,None,FALSE,Infection
-Paris,Deck,Blue,None,FALSE,Infection
-Johannesburg,Deck,Blue,None,FALSE,Infection
-Johannesburg,Deck,Blue,None,FALSE,Infection
-Atlanta,Deck,Blue,None,FALSE,Infection
-Washington,Deck,Blue,None,FALSE,Infection
-Buenos Aires,Deck,Yellow,None,FALSE,Infection
-Buenos Aires,Deck,Yellow,None,FALSE,Infection
-Lagos,Deck,Yellow,None,FALSE,Infection
-Lagos,Deck,Yellow,None,FALSE,Infection
-Jacksonville,Deck,Yellow,None,FALSE,Infection
-Jacksonville,Deck,Yellow,None,FALSE,Infection
-Jacksonville,Deck,Yellow,None,FALSE,Infection
-Khartoum,Deck,Yellow,None,FALSE,Infection
-Santiago,Deck,Yellow,None,FALSE,Infection
-Lima,Deck,Yellow,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
-Hollow Men Gather,Deck,None,None,FALSE,Infection
+unique_name,card_name,location,color,sticker,forsaken,card_type
+atlanta 0,atlanta,Deck,Blue,,False,Infection
+baghdad 1,baghdad,Deck,Black,,False,Infection
+baghdad 2,baghdad,Deck,Black,,False,Infection
+bogota 3,bogota,Deck,Yellow,,True,Infection
+bogota 4,bogota,Deck,Yellow,,True,Infection
+buenos aires 5,buenos aires,Deck,Yellow,,False,Infection
+buenos aires 6,buenos aires,Deck,Yellow,,False,Infection
+cairo 7,cairo,Deck,Black,,False,Infection
+cairo 8,cairo,Package 6,Black,,False,Infection
+cairo 9,cairo,Package 6,Black,,False,Infection
+chicago 10,chicago,Package 6,Blue,,False,Infection
+chicago 11,chicago,Package 6,Blue,,False,Infection
+delhi 12,delhi,Deck,Black,,False,Infection
+denver 13,denver,Deck,Blue,,True,Infection
+denver 14,denver,Deck,Blue,,True,Infection
+hollow men gather 15,hollow men gather,Deck,None,,False,Infection
+hollow men gather 16,hollow men gather,Deck,None,,False,Infection
+hollow men gather 17,hollow men gather,Deck,None,,False,Infection
+hollow men gather 18,hollow men gather,Deck,None,,False,Infection
+hollow men gather 19,hollow men gather,Deck,None,,False,Infection
+hollow men gather 20,hollow men gather,Deck,None,,False,Infection
+hollow men gather 21,hollow men gather,Deck,None,,False,Infection
+hollow men gather 22,hollow men gather,Deck,None,,False,Infection
+jacksonville 23,jacksonville,Deck,Yellow,,False,Infection
+jacksonville 24,jacksonville,Deck,Yellow,,False,Infection
+jacksonville 25,jacksonville,Deck,Yellow,,False,Infection
+jakarta 26,jakarta,Deck,Red,,False,Infection
+johannesburg 27,johannesburg,Deck,Blue,,False,Infection
+johannesburg 28,johannesburg,Deck,Blue,,False,Infection
+khartoum 29,khartoum,Deck,Yellow,,False,Infection
+kinshasa 30,kinshasa,Deck,Yellow,,True,Infection
+kolkata 31,kolkata,Deck,Black,,False,Infection
+lagos 32,lagos,Deck,Yellow,,False,Infection
+lagos 33,lagos,Deck,Yellow,,False,Infection
+lagos 34,lagos,Package 6,Yellow,,False,Infection
+lima 35,lima,Deck,Yellow,,False,Infection
+london 36,london,Package 6,Blue,,False,Infection
+london 37,london,Package 6,Blue,,False,Infection
+london well stocked 38,london well stocked,Deck,Blue,well stocked,False,Infection
+moscow 39,moscow,Deck,Black,,False,Infection
+new mumbai 40,new mumbai,Deck,Black,,False,Infection
+new york 41,new york,Deck,Blue,,False,Infection
+new york 42,new york,Package 6,Blue,,False,Infection
+new york 43,new york,Package 6,Blue,,False,Infection
+paris 44,paris,Deck,Blue,,False,Infection
+paris 45,paris,Deck,Blue,,False,Infection
+san francisco 46,san francisco,Package 6,Blue,,False,Infection
+san francisco 47,san francisco,Package 6,Blue,,False,Infection
+santiago 48,santiago,Deck,Yellow,,False,Infection
+sao paulo 49,sao paulo,Package 6,Yellow,,False,Infection
+sao paulo 50,sao paulo,Package 6,Yellow,,False,Infection
+sao paulo 51,sao paulo,Package 6,Yellow,,False,Infection
+st. petersburg well stocked 52,st. petersburg well stocked,Deck,Blue,well stocked,False,Infection
+tehran 53,tehran,Deck,Black,,False,Infection
+tripoli 54,tripoli,Deck,Black,,False,Infection
+tripoli 55,tripoli,Package 6,Black,,False,Infection
+tripoli 56,tripoli,Package 6,Black,,False,Infection
+washington 57,washington,Deck,Blue,,False,Infection
+washington 58,washington,Package 6,Blue,,False,Infection
+washington 59,washington,Package 6,Blue,,False,Infection

@@ -24,7 +24,7 @@ class Deck:
     #Use regex to find matching card that could be on top of deck.
     #If multiple choices exist, choses first option.
     def find_best_match(self, card_input, card_list):
-        pattern = re.escape(card_input) + '[0-9]+'
+        pattern = re.escape(card_input) + ' [0-9]+'
         for card in card_list:
             match = re.search(pattern, card)
             if match: return card
