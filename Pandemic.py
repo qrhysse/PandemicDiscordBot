@@ -15,9 +15,9 @@ class Deck:
         self.deck_list = [[card for card in self.in_deck.unique_name] \
                           for x in range(self.deck_size)]
         self.discard_list = [card for card in \
-                             card_df[card_df.location == 'Discard'].unique_name]
+                           card_df[card_df.location == 'Discard'].unique_name]
         self.package_list = [card for card in \
-                             card_df[card_df.location == 'Package 6'].unique_name]
+                           card_df[card_df.location == 'Package 6'].unique_name]
 
 
 
@@ -40,10 +40,12 @@ class Deck:
         self.cards.at[card_input, 'location'] = 'Package 6'
         self.package_list.insert(0, card_input)
 
-    #Change location in dataframe to 'discard,' remove card from deck list and add to discard list
+    #Change location in dataframe to 'discard'
+    #remove card from deck list and add to discard list
     def discard_top(self, card_input):
         card_name = self.find_best_match(card_input, self.deck_list[0])
-        #Reminder to infect another city if this city is forsake. Moves card to game end area
+        #Reminder to infect another city if this city is forsake.
+        #Moves card to game end area
         if self.cards.at[card_name, 'forsaken'] == True:
             for slot in self.deck_list:
                 self.remove_from_card_list(card_name, slot)
@@ -62,7 +64,8 @@ class Deck:
 
     def discard_bot(self, card_input):
         card_name = self.find_best_match(card_input, self.deck_list[-1])
-        #Reminder to infect another city if this city is forsaken. Moves card to game end area
+        #Reminder to infect another city if this city is forsaken.
+        #Moves card to game end area
         if self.cards.at[card_name, 'forsaken'] == True:
             for slot in self.deck_list:
                 self.remove_from_card_list(card_name, slot)
@@ -92,7 +95,7 @@ class Deck:
         self.move_to_package(card_name)
         self.remove_from_card_list(card_name, self.discard_list)
 
-    #Move cards from discard to deck. Add those cards to possible cards in deck list
+    #Move cards from discard to deck. Add those cards to possible cards in deck
     #and remove from discard list.
     def epidemic(self):
         #Increase infection tracker by 1
@@ -118,7 +121,9 @@ class Deck:
                         .format(i+1, self.deck_list[i]))
         print(answer)
 
-    #Retuirns a dictionary of each card and how many will be drawn in the top x cards
+    #Retuirns a dictionary of each card
+    #and how many will be drawn in the top x cards
+    #sorted by odds of being drawn
     def create_probablility_dict(self, top_cards):
         deck_slot = [self.deck_list[i] for i in range(top_cards)]
 
@@ -145,13 +150,16 @@ class Deck:
         for k, v in end_dict.items():
             end_dict[k] = round(v, 2)
         sorted_odds = {k: v for k, v in \
-                sorted(end_dict.items(), key=lambda item: item[1], reverse=True)}
+                sorted(end_dict.items(), \
+                key=lambda item: item[1], \
+                reverse=True)}
         return sorted_odds
 
 
     def predict_next_infect_cities(self):
         prediction_dict = self.create_probablility_dict(inf_rate[inf_tracker])
-        print('In the next infect cities step, you will probably hit: \n{}'.format(prediction_dict))
+        print('In the next infect cities step, you will probably hit: \n{}'\
+                .format(prediction_dict))
 
 
 
