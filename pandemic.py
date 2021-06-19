@@ -9,15 +9,15 @@ inf_tracker = 0
 class Deck:
     def __init__(self, card_df, card_type):
         self.type = card_type
-        self.cards = card_df[card_df.card_type == self.type]
+        self.cards = card_df.loc[card_df.card_type == self.type]
         self.in_deck = card_df[card_df.location == 'Deck']
         self.deck_size = len(self.in_deck)
-        self.deck_list = [[card for card in self.in_deck.unique_name]
+        self.deck_list = [[card for card in self.in_deck.index]
                           for x in range(self.deck_size)]
         self.discard_list = [card for card in
-                           card_df[card_df.location == 'Discard'].unique_name]
+                           card_df[card_df.location == 'Discard'].index]
         self.package_list = [card for card in
-                           card_df[card_df.location == 'Package 6'].unique_name]
+                           card_df[card_df.location == 'Package 6'].index]
 
 
 
