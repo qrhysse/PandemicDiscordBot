@@ -6,51 +6,54 @@ import pandemic
 
 #SPREADSHEET_ID = '133EKlMVdgp8e-aEEiBsV4NPdttHHDfk0JKvQfNXASUw'
 #spreadsheet = sh.sheet_to_df(SPREADSHEET_ID)
-#infection_cards = pd.DataFrame(spreadsheet[0], columns = spreadsheet[1])
+#cards_df = pd.DataFrame(spreadsheet[0], columns = spreadsheet[1])
 
 sheet_id = '133EKlMVdgp8e-aEEiBsV4NPdttHHDfk0JKvQfNXASUw'
 sheet_name = 'CardsCopy'
-infection_cards = pd.read_csv(\
-    'https://docs.google.com/spreadsheets/d/{}/gviz/tq?tqx=out:csv&sheet={}'
-                                            .format(sheet_id, sheet_name))
+cards_df = pd.read_csv(
+        'https://docs.google.com/spreadsheets/d/{}/gviz/tq?tqx=out:csv&sheet={}'
+        .format(sheet_id, sheet_name))
 
-infection_cards.columns = infection_cards.columns.str.lower().                 \
-                                                  str.replace(' ', '_')
-infection_cards['card_name'] = infection_cards['card_name'].str.lower()
-infection_cards.dropna(how='all', axis=1, inplace=True)
-infection_cards.sort_values(['card_name', 'location'],
-                             inplace=True, ignore_index=True)
-infection_cards['unique_name'] = infection_cards.card_name +                   \
-                                 infection_cards.index.map(str)
-infection_cards.set_index('unique_name', inplace=True, drop=False)
-infection_cards['forsaken'] = infection_cards.apply(lambda x:
-                              True if x.forsaken == 'TRUE' else False, axis=1)
-infection_cards['sticker'] = infection_cards.apply(lambda x:
+cards_df.columns = cards_df.columns.str.lower().str.replace(' ', '_')
+cards_df.dropna(how='all', axis=1, inplace=True)
+cards_df['card_name'] = cards_df['card_name'].str.lower()
+cards_df['forsaken'] = cards_df.apply(lambda x:
+                             True if x.forsaken == 'TRUE' else False, axis=1)
+cards_df['sticker'] = cards_df.apply(lambda x:
                              None if x.sticker == 'None' else x.sticker, axis=1)
+cards_df.sort_values(['card_name', 'location'],
+                             inplace=True, ignore_index=True)
+cards_df['unique_name'] = cards_df.card_name + cards_df.index.map(str)
+cards_df.set_index('unique_name', inplace=True, drop=False)
 
-
-infection_deck = pandemic.Deck(infection_cards, 'Infection')
+infection_deck = pandemic.Deck(cards_df, 'Infection')
 
 while True:
     command = input("Command: ").lower()
     if re.search("start game", command):
-        pandemic.start_game(infection_cards)
+        pandemic.start_game(cards_df)
         print('Infection Deck\n')
         print(infection_deck.cards)
     elif re.search('flip', command):
         card_name = command[5:]
         try: infection_deck.discard_top(card_name)
         except: print('That card isn\t there!')
+        print(infection_deck.discard_list)
     elif re.search('inoculate', command):
         card_name = command[10:]
         try: infection_deck.inoculate(card_name)
         except: print('That card isn\t there!')
+        print(infection_deck.discard_list)
+        print(infection_deck.package_list)
     elif re.search('wear off', command):
         card_name = command[9:]
         try: infection_deck.wear_off(card_name)
         except: print('That card isn\t there!')
+        print(infection_deck.discard_list)
+        print(infection_deck.package_list)
     elif re.search('epidemic', command):
         infection_deck.epidemic()
+        print(infection_deck.discard_list)
     elif re.search('top(( )| \d? )cards?', command):
         temp_list = re.findall(r'\d+', command) + ['1']
         x = int(temp_list[0])
@@ -61,3 +64,5 @@ while True:
         print(infection_deck.create_probablility_dict(x))
     elif re.search('predict infect cities', command):
         infection_deck.predict_next_infect_cities()
+    elif re.search('show cards', command):
+        print infection_deck.cards

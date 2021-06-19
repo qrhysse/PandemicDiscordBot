@@ -29,9 +29,6 @@ class Deck:
             match = re.search(pattern, card)
             if match: return card
 
-    def remove_from_card_list(self, card_input, card_list):
-        card_list.remove(card_input)
-
     def move_to_discard(self, card_input):
         self.cards.at[card_input, 'location'] = 'Discard'
         self.discard_list.insert(0, card_input)
@@ -48,14 +45,14 @@ class Deck:
         #Moves card to game end area
         if self.cards.at[card_name, 'forsaken'] == True:
             for slot in self.deck_list:
-                self.remove_from_card_list(card_name, slot)
+                slot.remove(card_name)
             self.cards.at[card_name, 'location'] = 'Game End'
             print(card_input + ' is forsaken. Move ' + card_input +
                   ' to the \"Game End\" area and infect a new city.')
         else:
             self.move_to_discard(card_name)
             for slot in self.deck_list:
-                self.remove_from_card_list(card_name, slot)
+                slot.remove(card_name)
             print(card_input + ' was discarded.\n')
             #Reminder to discard another card for Hollow Men effect
             if re.search('Hollow Men', card_name, re.IGNORECASE):
@@ -64,22 +61,21 @@ class Deck:
 
     def discard_bot(self, card_input):
         card_name = self.find_best_match(card_input, self.deck_list[-1])
+
+        self.move_to_discard(card_name)
+        for slot in self.deck_list:
+            slot.remove(card_name)
+        #Reminder to discard another card for Hollow Men effect
+        if re.search('Hollow Men', card_name, re.IGNORECASE):
+            print('Discard another card.\n')
         #Reminder to infect another city if this city is forsaken.
         #Moves card to game end area
-        if self.cards.at[card_name, 'forsaken'] == True:
-            for slot in self.deck_list:
-                self.remove_from_card_list(card_name, slot)
+        elif self.cards.at[card_name, 'forsaken'] == True:
             self.cards.at[card_name, 'location'] = 'Game End'
+            self.discard_list.remove(card_name)
             print(card_input + ' is forsaken. Move ' + card_input +
-                  ' to the \"Game End\" area and infect a new city.')
-        else:
-            self.move_to_discard(card_name)
-            for slot in self.deck_list:
-                self.remove_from_card_list(card_name, slot)
-            print(card_input + ' was discarded.\n')
-            #Reminder to discard another card for Hollow Men effect
-            if re.search('Hollow Men', card_name, re.IGNORECASE):
-                print('Discard another card.\n')
+                      ' to the \"Game End\" area and infect a new city.')
+        else: print(card_input + ' was discarded.\n')
         del self.deck_list[-1]
 
 
@@ -87,13 +83,18 @@ class Deck:
     def wear_off(self, card_input):
         card_name = self.find_best_match(card_input, self.package_list)
         self.move_to_discard(card_name)
-        self.remove_from_card_list(card_name, self.package_list)
+        self.package_list.remove(card_name)
 
     #Move card from discard pile to package 6
     def inoculate(self, card_input):
         card_name = self.find_best_match(card_input, self.discard_list)
         self.move_to_package(card_name)
-        self.remove_from_card_list(card_name, self.discard_list)
+        self.discard_list.remove(card_name)
+
+    def destroy_card(self, card_input):
+        card_name = self.find_best_match(card_input, self.discard_list)
+        self.cards.at[card_input, 'location'] = 'Trash'
+        self.discard_list.remove(card_name)
 
     #Move cards from discard to deck. Add those cards to possible cards in deck
     #and remove from discard list.
@@ -167,6 +168,7 @@ class Deck:
 def start_game(card_df):
     #Move discard pile to deck
     card_df.replace('Discard', 'Deck', inplace=True)
+    card_df.replace('Game End', 'Deck', inplace=True)
     print('All discarded cards moved to the deck.')
     #Reset infection tracker at start of game
     global infection_tracker
