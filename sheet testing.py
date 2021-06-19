@@ -45,4 +45,6 @@ while True:
     elif re.search('next(( )| \d? )cards? odds', command):
         temp_list = re.findall(r'\d+', command) + ['1']
         x = int(temp_list[0])
-        infection_deck.create_probablility_dict(x)
+        print(infection_deck.create_probablility_dict(x))
+    elif re.search('predict infect cities', command):
+        infection_deck.predict_next_infect_cities()

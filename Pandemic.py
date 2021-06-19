@@ -146,12 +146,12 @@ class Deck:
             end_dict[k] = round(v, 2)
         sorted_odds = {k: v for k, v in \
                 sorted(end_dict.items(), key=lambda item: item[1], reverse=True)}
-        print(sorted_odds)
+        return sorted_odds
 
 
     def predict_next_infect_cities(self):
-        prediction_dict = self.create_probablility_dict(infection_rate[infection_tracker])
-        print('In the next infect cities step, you will probably hit: {}'.format(prediction_dict))
+        prediction_dict = self.create_probablility_dict(inf_rate[inf_tracker])
+        print('In the next infect cities step, you will probably hit: \n{}'.format(prediction_dict))
 
 
 
