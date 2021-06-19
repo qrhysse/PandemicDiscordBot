@@ -12,11 +12,11 @@ class Deck:
         self.cards = card_df[card_df.card_type == self.type]
         self.in_deck = card_df[card_df.location == 'Deck']
         self.deck_size = len(self.in_deck)
-        self.deck_list = [[card for card in self.in_deck.unique_name] \
+        self.deck_list = [[card for card in self.in_deck.unique_name]
                           for x in range(self.deck_size)]
-        self.discard_list = [card for card in \
+        self.discard_list = [card for card in
                            card_df[card_df.location == 'Discard'].unique_name]
-        self.package_list = [card for card in \
+        self.package_list = [card for card in
                            card_df[card_df.location == 'Package 6'].unique_name]
 
 
@@ -149,16 +149,16 @@ class Deck:
             end_dict = dict(Counter(end_dict) + Counter(slot))
         for k, v in end_dict.items():
             end_dict[k] = round(v, 2)
-        sorted_odds = {k: v for k, v in \
-                sorted(end_dict.items(), \
-                key=lambda item: item[1], \
+        sorted_odds = {k: v for k, v in
+                sorted(end_dict.items(),
+                key=lambda item: item[1],
                 reverse=True)}
         return sorted_odds
 
 
     def predict_next_infect_cities(self):
         prediction_dict = self.create_probablility_dict(inf_rate[inf_tracker])
-        print('In the next infect cities step, you will probably hit: \n{}'\
+        print('In the next infect cities step, you will probably hit: \n{}'
                 .format(prediction_dict))
 
 

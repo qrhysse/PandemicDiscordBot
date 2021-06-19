@@ -6,12 +6,12 @@ import pandemic
 
 #SPREADSHEET_ID = '133EKlMVdgp8e-aEEiBsV4NPdttHHDfk0JKvQfNXASUw'
 #spreadsheet = sh.sheet_to_df(SPREADSHEET_ID)
-
 #infection_cards = pd.DataFrame(spreadsheet[0], columns = spreadsheet[1])
+
 sheet_id = '133EKlMVdgp8e-aEEiBsV4NPdttHHDfk0JKvQfNXASUw'
 sheet_name = 'CardsCopy'
 infection_cards = pd.read_csv(\
-    'https://docs.google.com/spreadsheets/d/{}/gviz/tq?tqx=out:csv&sheet={}'   \
+    'https://docs.google.com/spreadsheets/d/{}/gviz/tq?tqx=out:csv&sheet={}'
                                             .format(sheet_id, sheet_name))
 
 infection_cards.columns = infection_cards.columns.str.lower().                 \
@@ -23,10 +23,12 @@ infection_cards.sort_values(['card_name', 'location'],
 infection_cards['unique_name'] = infection_cards.card_name +                   \
                                  infection_cards.index.map(str)
 infection_cards.set_index('unique_name', inplace=True, drop=False)
-infection_cards['forsaken'] = infection_cards.apply(lambda x:                  \
+infection_cards['forsaken'] = infection_cards.apply(lambda x:
                               True if x.forsaken == 'TRUE' else False, axis=1)
-infection_cards['sticker'] = infection_cards.apply(lambda x:                   \
+infection_cards['sticker'] = infection_cards.apply(lambda x:
                              None if x.sticker == 'None' else x.sticker, axis=1)
+
+
 infection_deck = pandemic.Deck(infection_cards, 'Infection')
 
 while True:
