@@ -16,15 +16,16 @@ cards_df = pd.read_csv(
 
 cards_df.columns = cards_df.columns.str.lower().str.replace(' ', '_')
 cards_df.dropna(how='all', axis=1, inplace=True)
-cards_df['card_name'] = cards_df['card_name'].str.lower()
+cards_df.fillna('', inplace=True)
 cards_df['forsaken'] = cards_df.apply(lambda x:
                                       True if x.forsaken == 'TRUE'
                                       else False, axis=1)
-cards_df['sticker'] = cards_df.apply(lambda x:
-                                     None if x.sticker == 'None'
-                                     else x.sticker, axis=1)
+cards_df['sticker'] = cards_df.sticker.str.lower()
+n_mask = lambda x: '{} {}'.format(x.card_name.lower(), x.sticker)
+cards_df['card_name'] = cards_df.apply(n_mask, axis=1)
 cards_df.sort_values(['card_name', 'location'], inplace=True, ignore_index=True)
-cards_df['unique_name'] = cards_df.card_name + cards_df.index.map(str)
+u_mask = lambda x: '{} {}'.format(x.card_name.lower(), x.name)
+cards_df['unique_name'] = cards_df.apply(u_mask, axis=1)
 cards_df.set_index('unique_name', inplace=True, drop=True)
 
 infection_deck = pandemic.Deck(cards_df, 'Infection')
