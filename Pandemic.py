@@ -3,8 +3,8 @@ from collections import Counter
 
 #decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 #The number of cards that are flipped during infect cities step
-infection_rate = [2, 2, 2, 3, 3, 4, 4, 5]
-infection_tracker = 0
+inf_rate = [2, 2, 2, 3, 3, 4, 4, 5]
+inf_tracker = 0
 
 class Deck:
     def __init__(self, card_df, card_type):
@@ -43,7 +43,6 @@ class Deck:
     #Change location in dataframe to 'discard,' remove card from deck list and add to discard list
     def discard_top(self, card_input):
         card_name = self.find_best_match(card_input, self.deck_list[0])
-
         #Reminder to infect another city if this city is forsake. Moves card to game end area
         if self.cards.at[card_name, 'forsaken'] == True:
             for slot in self.deck_list:
@@ -59,8 +58,27 @@ class Deck:
             #Reminder to discard another card for Hollow Men effect
             if re.search('Hollow Men', card_name, re.IGNORECASE):
                 print('Discard another card.\n')
-
         del self.deck_list[0]
+
+    def discard_bot(self, card_input):
+        card_name = self.find_best_match(card_input, self.deck_list[-1])
+        #Reminder to infect another city if this city is forsaken. Moves card to game end area
+        if self.cards.at[card_name, 'forsaken'] == True:
+            for slot in self.deck_list:
+                self.remove_from_card_list(card_name, slot)
+            self.cards.at[card_name, 'location'] = 'Game End'
+            print(card_input + ' is forsaken. Move ' + card_input +
+                  ' to the \"Game End\" area and infect a new city.')
+        else:
+            self.move_to_discard(card_name)
+            for slot in self.deck_list:
+                self.remove_from_card_list(card_name, slot)
+            print(card_input + ' was discarded.\n')
+            #Reminder to discard another card for Hollow Men effect
+            if re.search('Hollow Men', card_name, re.IGNORECASE):
+                print('Discard another card.\n')
+        del self.deck_list[-1]
+
 
     #Move card from Package 6 to discard pile
     def wear_off(self, card_input):
@@ -78,9 +96,15 @@ class Deck:
     #and remove from discard list.
     def epidemic(self):
         #Increase infection tracker by 1
-        global infection_tracker
-        infection_tracker += 1
-
+        print('1-Increase')
+        global inf_tracker
+        inf_tracker += 1
+        print('Infection Tracker is at {}'.format(inf_rate[inf_tracker]))
+        print('2-Infect\n Flip the bottom card')
+        bot_card = input('What was the bottom card?').lower()
+        self.discard_bot(bot_card)
+        print('''3-Intensify\n
+              Shuffle the discard pile and place on top of the deck''')
         for card in self.discard_list:
             self.cards.at[card, 'location'] = 'Deck'
             self.deck_list.insert(0, self.discard_list)
@@ -90,8 +114,9 @@ class Deck:
     def top_x_cards(self, x):
         answer = ''
         for i in range(x):
-            answer += ('\nCard {0} possibilities: {1}'.format(i+1, self.deck_list[i]))
-        return(answer)
+            answer += ('\nCard {0} possibilities: {1}\n'
+                        .format(i+1, self.deck_list[i]))
+        print(answer)
 
     #Retuirns a dictionary of each card and how many will be drawn in the top x cards
     def create_probablility_dict(self, top_cards):
@@ -119,7 +144,9 @@ class Deck:
             end_dict = dict(Counter(end_dict) + Counter(slot))
         for k, v in end_dict.items():
             end_dict[k] = round(v, 2)
-        return end_dict
+        sorted_odds = {k: v for k, v in \
+                sorted(end_dict.items(), key=lambda item: item[1], reverse=True)}
+        print(sorted_odds)
 
 
     def predict_next_infect_cities(self):
@@ -133,7 +160,6 @@ def start_game(card_df):
     #Move discard pile to deck
     card_df.replace('Discard', 'Deck', inplace=True)
     print('All discarded cards moved to the deck.')
-
     #Reset infection tracker at start of game
     global infection_tracker
     infection_tracker = 0
