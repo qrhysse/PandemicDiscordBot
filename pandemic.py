@@ -44,15 +44,13 @@ class Deck:
         #Reminder to infect another city if this city is forsake.
         #Moves card to game end area
         if self.cards.at[card_name, 'forsaken'] == True:
-            for slot in self.deck_list:
-                slot.remove(card_name)
+            for slot in self.deck_list: slot.remove(card_name)
             self.cards.at[card_name, 'location'] = 'Game End'
             print(card_input + ' is forsaken. Move ' + card_input +
                   ' to the \"Game End\" area and infect a new city.')
         else:
             self.move_to_discard(card_name)
-            for slot in self.deck_list:
-                slot.remove(card_name)
+            for slot in self.deck_list: slot.remove(card_name)
             print(card_input + ' was discarded.\n')
             #Reminder to discard another card for Hollow Men effect
             if re.search('Hollow Men', card_name, re.IGNORECASE):
@@ -63,8 +61,7 @@ class Deck:
         card_name = self.find_best_match(card_input, self.deck_list[-1])
 
         self.move_to_discard(card_name)
-        for slot in self.deck_list:
-            slot.remove(card_name)
+        for slot in self.deck_list: slot.remove(card_name)
         #Reminder to discard another card for Hollow Men effect
         if re.search('Hollow Men', card_name, re.IGNORECASE):
             print('Discard another card.\n')
