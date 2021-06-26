@@ -8,6 +8,10 @@ inf_tracker = 0
 
 class Deck:
     def __init__(self, card_df, card_type):
+        self.reset(card_df, card_type)
+
+
+    def reset(self, card_df, card_type):
         self.type = card_type
         self.cards = card_df.loc[card_df.card_type == self.type]
         self.in_deck = card_df[card_df.location == 'Deck']
@@ -18,24 +22,23 @@ class Deck:
                            card_df[card_df.location == 'Discard'].index]
         self.package_list = [card for card in
                            card_df[card_df.location == 'Package 6'].index]
-
-
-
     #Use regex to find matching card that could be on top of deck.
     #If multiple choices exist, choses first option.
     def find_best_match(self, card_input, card_list):
-        pattern = re.escape(card_input) + ' [0-9]+'
+        pattern = re.escape(card_input) + ' [0-9]+$'
         for card in card_list:
-            match = re.search(pattern, card)
+            match = re.fullmatch(pattern, card)
             if match: return card
 
     def move_to_discard(self, card_input):
         self.cards.at[card_input, 'location'] = 'Discard'
         self.discard_list.insert(0, card_input)
+        self.discard_list.sort()
 
     def move_to_package(self, card_input):
         self.cards.at[card_input, 'location'] = 'Package 6'
         self.package_list.insert(0, card_input)
+        self.package_list.sort()
 
     #Change location in dataframe to 'discard'
     #remove card from deck list and add to discard list
@@ -43,19 +46,22 @@ class Deck:
         card_name = self.find_best_match(card_input, self.deck_list[0])
         #Reminder to infect another city if this city is forsake.
         #Moves card to game end area
+        answer = ''
         if self.cards.at[card_name, 'forsaken'] == True:
             for slot in self.deck_list: slot.remove(card_name)
             self.cards.at[card_name, 'location'] = 'Game End'
-            print(card_input + ' is forsaken. Move ' + card_input +
-                  ' to the \"Game End\" area and infect a new city.')
+            answer = '{0} is forsaken. \
+                      Move {0} to the \"Game End\" area and infect a new city.'\
+                      .format(card_input.title())
         else:
             self.move_to_discard(card_name)
             for slot in self.deck_list: slot.remove(card_name)
-            print(card_input + ' was discarded.\n')
+            answer = card_input.title() + ' was discarded.\n'
             #Reminder to discard another card for Hollow Men effect
             if re.search('Hollow Men', card_name, re.IGNORECASE):
-                print('Discard another card.\n')
+                answer += 'Discard another card.\n'
         del self.deck_list[0]
+        return(answer)
 
     def discard_bot(self, card_input):
         card_name = self.find_best_match(card_input, self.deck_list[-1])
@@ -81,31 +87,25 @@ class Deck:
         card_name = self.find_best_match(card_input, self.package_list)
         self.move_to_discard(card_name)
         self.package_list.remove(card_name)
+        self.package_list.sort()
 
     #Move card from discard pile to package 6
     def inoculate(self, card_input):
         card_name = self.find_best_match(card_input, self.discard_list)
         self.move_to_package(card_name)
         self.discard_list.remove(card_name)
+        self.discard_list.sort()
 
     def destroy_card(self, card_input):
         card_name = self.find_best_match(card_input, self.discard_list)
         self.cards.at[card_input, 'location'] = 'Trash'
         self.discard_list.remove(card_name)
+        self.discard_list.sort()
 
     #Move cards from discard to deck. Add those cards to possible cards in deck
     #and remove from discard list.
-    def epidemic(self):
-        #Increase infection tracker by 1
-        print('1-Increase')
-        global inf_tracker
-        inf_tracker += 1
-        print('Infection Tracker is at {}'.format(inf_rate[inf_tracker]))
-        print('2-Infect\n Flip the bottom card')
-        bot_card = input('What was the bottom card?').lower()
-        self.discard_bot(bot_card)
-        print('''3-Intensify\n
-              Shuffle the discard pile and place on top of the deck''')
+    def epidemic(self, card_input):
+        self.wear_off(card_input)
         for card in self.discard_list:
             self.cards.at[card, 'location'] = 'Deck'
             self.deck_list.insert(0, self.discard_list)
@@ -115,9 +115,11 @@ class Deck:
     def top_x_cards(self, x):
         answer = ''
         for i in range(x):
-            answer += ('\nCard {0} possibilities: {1}\n'
-                        .format(i+1, self.deck_list[i]))
-        print(answer)
+            slot = [re.sub(' [0-9]+$', '', x) for x in self.deck_list[i]]
+            c = {key: value for key, value in Counter(slot).items()}
+            answer += ('\nCard {0} possibilities: \n{1}'
+                        .format(i+1, c))
+        return answer
 
     #Retuirns a dictionary of each card
     #and how many will be drawn in the top x cards
@@ -151,22 +153,38 @@ class Deck:
                 sorted(end_dict.items(),
                 key=lambda item: item[1],
                 reverse=True)}
-        return sorted_odds
+        return str(sorted_odds)
 
 
     def predict_next_infect_cities(self):
         prediction_dict = self.create_probablility_dict(inf_rate[inf_tracker])
-        print('In the next infect cities step, you will probably hit: \n{}'
-                .format(prediction_dict))
+        answer = 'In the next infect cities step, you will probably hit: \n{}'\
+                .format(prediction_dict)
+        return answer
+
 
 
 
 #Process for starting a new game
-def start_game(card_df):
+def start_game(deck):
+
     #Move discard pile to deck
-    card_df.replace('Discard', 'Deck', inplace=True)
-    card_df.replace('Game End', 'Deck', inplace=True)
+    print(deck.cards.head())
+    deck.cards.replace('Discard', 'Deck', inplace=True)
+    deck.cards.replace('Game End', 'Deck', inplace=True)
+    print(deck.cards.head())
+    hollows = deck.cards.loc[deck.cards.card_name=='hollow men gather']
+    deck.cards.apply(lambda x:
+        deck.move_to_discard(x.name) if x.card_name=='hollow men gather'
+        else None, axis = 1)
+    return(deck)
+
     print('All discarded cards moved to the deck.')
+
     #Reset infection tracker at start of game
     global infection_tracker
     infection_tracker = 0
+
+def increase_inf_rate():
+    global inf_tracker
+    inf_tracker += 1

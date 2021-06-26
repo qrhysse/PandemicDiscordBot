@@ -3,3 +3,6 @@ keys.json
 *.pyc
 testing.py
 sheet.py
+*.env
+sheet testing.py
+*.csv
