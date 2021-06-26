@@ -8,6 +8,10 @@ inf_tracker = 0
 
 class Deck:
     def __init__(self, card_df, card_type):
+        self.reset(card_df, card_type)
+
+
+    def reset(self, card_df, card_type):
         self.type = card_type
         self.cards = card_df.loc[card_df.card_type == self.type]
         self.in_deck = card_df[card_df.location == 'Deck']
@@ -18,15 +22,12 @@ class Deck:
                            card_df[card_df.location == 'Discard'].index]
         self.package_list = [card for card in
                            card_df[card_df.location == 'Package 6'].index]
-
-
-
     #Use regex to find matching card that could be on top of deck.
     #If multiple choices exist, choses first option.
     def find_best_match(self, card_input, card_list):
-        pattern = re.escape(card_input) + ' [0-9]+'
+        pattern = re.escape(card_input) + ' [0-9]+$'
         for card in card_list:
-            match = re.search(pattern, card)
+            match = re.fullmatch(pattern, card)
             if match: return card
 
     def move_to_discard(self, card_input):
@@ -114,8 +115,10 @@ class Deck:
     def top_x_cards(self, x):
         answer = ''
         for i in range(x):
-            answer += ('\nCard {0} possibilities: {1}\n'
-                        .format(i+1, self.deck_list[i]))
+            slot = [re.sub(' [0-9]+$', '', x) for x in self.deck_list[i]]
+            c = {key: value for key, value in Counter(slot).items()}
+            answer += ('\nCard {0} possibilities: \n{1}'
+                        .format(i+1, c))
         return answer
 
     #Retuirns a dictionary of each card
@@ -161,13 +164,23 @@ class Deck:
 
 
 
+
 #Process for starting a new game
-def start_game(card_df):
+def start_game(deck):
 
     #Move discard pile to deck
-    card_df.replace('Discard', 'Deck', inplace=True)
-    card_df.replace('Game End', 'Deck', inplace=True)
+    print(deck.cards.head())
+    deck.cards.replace('Discard', 'Deck', inplace=True)
+    deck.cards.replace('Game End', 'Deck', inplace=True)
+    print(deck.cards.head())
+    hollows = deck.cards.loc[deck.cards.card_name=='hollow men gather']
+    deck.cards.apply(lambda x:
+        deck.move_to_discard(x.name) if x.card_name=='hollow men gather'
+        else None, axis = 1)
+    return(deck)
+
     print('All discarded cards moved to the deck.')
+
     #Reset infection tracker at start of game
     global infection_tracker
     infection_tracker = 0
