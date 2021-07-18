@@ -16,30 +16,43 @@ infection_deck = pan.Deck(cards_df, 'Infection')
 @client.event
 async def on_ready():
     print('PandyBot is ready to save the world!')
-    sm.worksheet.format('I5:J6', {
-                    "backgroundColor": {"red": 1.0, "green": 0.0, "blue": 0.0}})
 
-@client.command()
-async def stop(ctx):
-    sm.worksheet.format('I5:J6', {
-                    "backgroundColor": {"red": 1.0, "green": 1.0, "blue": 1.0}})
-
+#Start new game
 @client.command(aliases = ['start'], brief='Reset the deck for a new game.')
 async def start_game(ctx):
+    sm.worksheet.format('I5:J6', {
+                    "backgroundColor": {"red": 1.0, "green": 0.0, "blue": 0.0}})
     reset_deck = pan.start_game(infection_deck)
     update_sheet(reset_deck.cards)
     infection_deck.reset(cards_df, infection_deck.type)
-    print(infection_deck.cards.head())
     await ctx.send(f'Game started!')
 
-@client.command(brief='Ckeck the current state of the game')
-async def state(ctx):
-    await ctx.send(f'Package 6 Contents: {len(infection_deck.package_list)} cards\n' +
-    str(infection_deck.package_list) +
-    f'\nInfection Discard Pile: {len(infection_deck.discard_list)} cards\n' +
-    str(infection_deck.discard_list))
+#Stop editing spreadsheet
+@client.command(aliases = ['stop'], brief='Change color of edit cells.')
+async def stop_game(ctx):
+    sm.worksheet.format('I5:J6', {
+                    "backgroundColor": {"red": 1.0, "green": 1.0, "blue": 1.0}})
 
-@client.command(aliases=['discard', 'infect'],
+#Change deck to match spreadsheet
+@client.command(brief='Update the deck after changing the spreadsheet')
+async def update(ctx):
+    global cards_df
+    global infection_deck
+    cards_df = sm.setup_dataframe()
+    infection_deck = pan.Deck(cards_df, 'Infection')
+
+#Check state command
+@client.command(brief='Check the current state of the game')
+async def state(ctx):
+    await ctx.send(
+       f'\nInfection Discard Pile: {len(infection_deck.discard_list)} cards\n' +
+       str(infection_deck.discard_list))
+    await ctx.send(
+       f'Package 6 Contents: {len(infection_deck.package_list)} cards\n' +
+       str(infection_deck.package_list))
+
+#Infect city command
+@client.command(aliases=['discard', 'infect', 'f'],
                 brief='Discard the top of the infection deck')
 async def flip(ctx, *, card):
     try:
@@ -51,35 +64,40 @@ async def flip(ctx, *, card):
     except:
         await ctx.send('I don\'t think that\'s right')
 
-@client.command(aliases=['innoculate', 'package', 'exile'],
+#Inoculate command
+@client.command(aliases=['innoculate', 'package', 'exile', 'i'],
                 brief='Move a card from Discard to Package 6')
 async def inoculate(ctx, *, card):
     try:
         infection_deck.inoculate(card)
         await ctx.send(f'{card.title()} was inoculated.\n'
             f'Package 6 Contents: {len(infection_deck.package_list)} cards\n' +
-            str(infection_deck.package_list) +
+            str(infection_deck.package_list))
+        await ctx.send(
             f'\nInfection Discard Pile: {len(infection_deck.discard_list)} cards\n' +
             str(infection_deck.discard_list))
         update_sheet(infection_deck.cards)
     except:
         await ctx.send('I don\'t think that\'s right')
 
-@client.command(aliases=['wear', 'unoculate'],
+#Wear off command
+@client.command(aliases=['wear', 'unoculate', 'w'],
                 brief='Move a card from Package 6 to Discard')
 async def wear_off(ctx, *, card):
     try:
         infection_deck.wear_off(card)
         await ctx.send(f'{card.title()}\'s inoculation wore off.\n'
             f'Package 6 Contents: {len(infection_deck.package_list)} cards\n' +
-            str(infection_deck.package_list) +
+            str(infection_deck.package_list))
+        await ctx.send(
             f'\nInfection Discard Pile: {len(infection_deck.discard_list)} cards\n' +
             str(infection_deck.discard_list))
         update_sheet(infection_deck.cards())
     except:
         await ctx.send('I don\'t think that\'s right')
 
-@client.command(aliases = ['destroy', 'trash'],
+#Destroy card command
+@client.command(aliases = ['destroy', 'trash', 'd'],
                 brief='Move a card from Discard to Trash')
 async def destroy_card(ctx, *, card):
     try:
@@ -89,21 +107,30 @@ async def destroy_card(ctx, *, card):
     except:
         await ctx.send('I don\'t think that\'s right')
 
-@client.command(aliases=['darn'], brief='Epidemic')
+#Epidemic command
+@client.command(aliases=['darn', 'e'], brief='Epidemic')
 async def epidemic(ctx):
     pan.increase_inf_rate()
     await ctx.send('1-Increase\n' +
                    f'The infection rate is now {pan.inf_rate[pan.inf_tracker]}')
-    await ctx.send('2-It\'s wearing off.\n'
-                   'Which card did you draw from Package 6?')
-    msg = await client.wait_for('message')
-    card = msg.content.lower()
-    infection_deck.epidemic(str(card))
+
+    await ctx.send('2-It\'s wearing off.\n')
+    while True:
+        try:
+            await ctx.send('Which card did you draw from Package 6?')
+            msg = await client.wait_for('message')
+            card = msg.content.lower()
+            infection_deck.epidemic(str(card))
+            print('Epidemic step 2 complete')
+            break
+        except:
+            await ctx.send('Try that again')
+
     await ctx.send('3-Intensify\n'
                    'Shuffle the discard pile and place it on top of the deck.')
     update_sheet(infection_deck.cards)
 
-@client.command(aliases = ['top'],
+@client.command(aliases = ['top', 't'],
                 brief='Show which cards could be in the top X slots.')
 async def top_cards(ctx):
     await ctx.send('How many cards should I check?')
@@ -113,7 +140,8 @@ async def top_cards(ctx):
     await ctx.send(answer)
     update_sheet(infection_deck.cards)
 
-@client.command(aliases = ['odds'],
+#See chance to hit each card
+@client.command(aliases = ['odds', 'o'],
                 brief='Odds of drawing a card in the top X cards.')
 async def odds_top_cards(ctx):
     await ctx.send('How many cards should I check?')
@@ -123,13 +151,15 @@ async def odds_top_cards(ctx):
     await ctx.send(answer)
     update_sheet(infection_deck.cards)
 
-@client.command(aliases = ['predict', 'prediction'],
+#Predict next infect cities step
+@client.command(aliases = ['predict', 'prediction', 'p'],
                 brief='Predict the next infect cities step.')
 async def predict_infect_cities(ctx):
     answer = infection_deck.predict_next_infect_cities()
     await ctx.send(answer)
     update_sheet(infection_deck.cards)
 
+#Change spreadsheet data to match dataframe
 def update_sheet(deck):
     cards_df.update(deck)
     cards_df.to_csv('pandemic sheet.csv')
