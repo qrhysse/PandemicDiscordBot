@@ -1,10 +1,21 @@
 import re
 from collections import Counter
+from copy import deepcopy
 
-#decimal.getcontext().rounding = decimal.ROUND_HALF_UP
-#The number of cards that are flipped during infect cities step
-inf_rate = [2, 2, 2, 3, 3, 4, 4, 5]
-inf_tracker = 0
+save1 = None
+save2 = None
+save3 = None
+
+class Game:
+    def __init__(self, cards_df):
+        self.df = cards_df
+        self.deck_inf = Deck(self.df, 'Infection')
+        self.inf_rate_list = [2, 2, 2, 3, 3, 4, 4, 5]
+        self.inf_tracker = 0
+        self.inf_rate = self.inf_rate_list[self.inf_tracker]
+
+    def increase_inf_rate(self):
+        self.inf_tracker += 1
 
 class Deck:
     def __init__(self, card_df, card_type):
@@ -173,20 +184,36 @@ class Deck:
 
 
 #Process for starting a new game
-def start_game(deck):
-
+def start_game(new_game):
+    global save1
+    global save2
+    global save3
+    save1 = new_game
+    save2 = None
+    save3 = None
     #Move discard pile to deck
-    deck.cards.replace('Discard', 'Deck', inplace=True)
-    deck.cards.replace('Game End', 'Deck', inplace=True)
-    hollows = deck.cards.loc[deck.cards.card_name=='hmg']
-    deck.cards.apply(lambda x:
-        deck.move_to_discard(x.name) if x.card_name=='hmg'
+    new_game.deck_inf.cards.replace('Discard', 'Deck', inplace=True)
+    new_game.deck_inf.cards.replace('Game End', 'Deck', inplace=True)
+    hollows = new_game.deck_inf.cards.loc[new_game.deck_inf.cards.card_name=='hmg']
+    new_game.deck_inf.cards.apply(lambda x:
+        new_game.deck_inf.move_to_discard(x.name) if x.card_name=='hmg'
         else None, axis = 1)
-    return(deck)
-    #Reset infection tracker at start of game
-    global infection_tracker
-    infection_tracker = 0
+    return(new_game)
 
-def increase_inf_rate():
-    global inf_tracker
-    inf_tracker += 1
+def quicksave(current_game):
+    global save1
+    global save2
+    global save3
+    save3 = deepcopy(save2)
+    save2 = deepcopy(save3)
+    save1 = deepcopy(current_game)
+
+def undo():
+    global save1
+    global save2
+    global save3
+    old_game = deepcopy(save1)
+    save1 = deepcopy(save2)
+    save2 = deepcopy(save3)
+    save3 = None
+    return(old_game)
